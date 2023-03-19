@@ -55,3 +55,31 @@ container.addEventListener("dblclick", function(event) {
         }, 1000);
     }
 });
+
+const repaintButton = document.getElementById("repaint-button");
+
+repaintButton.addEventListener("click", function() {
+  // Trouver les deux rectangles ayant la plus petite différence d'aire
+  let rect1 = null;
+  let rect2 = null;
+  let minDiff = Infinity;
+
+  for (let i = 0; i < rectangles.length; i++) {
+    for (let j = i + 1; j < rectangles.length; j++) {
+      const area1 = rectangles[i].offsetWidth * rectangles[i].offsetHeight;
+      const area2 = rectangles[j].offsetWidth * rectangles[j].offsetHeight;
+      const diff = Math.abs(area1 - area2);
+      
+      if (diff < minDiff) {
+        rect1 = rectangles[i];
+        rect2 = rectangles[j];
+        minDiff = diff;
+      }
+    }
+  }
+
+  // Repeindre les deux rectangles avec la même couleur aléatoire
+  const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  rect1.style.backgroundColor = color;
+  rect2.style.backgroundColor = color;
+});
