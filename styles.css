@@ -1,0 +1,13 @@
+#container {
+    width: 100%;
+    height: 100vh;
+    background-color: #f1f1f1;
+}
+
+.rectangle {
+    position: absolute;
+    border: 2px solid black;
+    transform-origin: center center;
+    transition: transform 1s ease-in-out;
+    z-index: 1; /* Ajout de la propriété z-index */
+}
