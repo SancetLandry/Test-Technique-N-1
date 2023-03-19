@@ -21,7 +21,7 @@ container.addEventListener("mousedown", function(event) {
         }
 
         if (rectangle) {
-            container.removeChild(rectangle); // Si un rectangle est déjà dessiné, on le supprime
+            container.removeChild(rectangle);
         }
 
         rectangle = document.createElement("div");
@@ -46,40 +46,49 @@ container.addEventListener("dblclick", function(event) {
     const index = rectangles.indexOf(event.target);
     if (index !== -1 && event.target === rectangles[index]) {
         const rectangle = rectangles[index];
+        if (rectangle.getAttribute("data-rotating") === "true") {
+            return;
+        }
+        rectangle.setAttribute("data-rotating", "true");
         rectangle.style.transform = "rotate(360deg)";
-        setTimeout(function() {
+        rectangle.addEventListener("transitionend", function() {
             if (rectangle.offsetWidth > 10 && rectangle.offsetHeight > 10) {
                 rectangle.remove();
                 rectangles.splice(index, 1);
             }
-        }, 1000);
+        });
     }
 });
 
 const repaintButton = document.getElementById("repaint-button");
 
 repaintButton.addEventListener("click", function() {
-  // Trouver les deux rectangles ayant la plus petite différence d'aire
-  let rect1 = null;
-  let rect2 = null;
-  let minDiff = Infinity;
+    let rect1 = null;
+    let rect2 = null;
+    let minDiff = Infinity;
 
-  for (let i = 0; i < rectangles.length; i++) {
-    for (let j = i + 1; j < rectangles.length; j++) {
-      const area1 = rectangles[i].offsetWidth * rectangles[i].offsetHeight;
-      const area2 = rectangles[j].offsetWidth * rectangles[j].offsetHeight;
-      const diff = Math.abs(area1 - area2);
-      
-      if (diff < minDiff) {
-        rect1 = rectangles[i];
-        rect2 = rectangles[j];
-        minDiff = diff;
-      }
+    for (let i = 0; i < rectangles.length; i++) {
+        for (let j = i + 1; j < rectangles.length; j++) {
+            const area1 = rectangles[i].offsetWidth * rectangles[i].offsetHeight;
+            const area2 = rectangles[j].offsetWidth * rectangles[j].offsetHeight;
+            const diff = Math.abs(area1 - area2);
+            
+            if (diff < minDiff) {
+                rect1 = rectangles[i];
+                rect2 = rectangles[j];
+                minDiff = diff;
+            }
+        }
     }
-  }
 
-  // Repeindre les deux rectangles avec la même couleur aléatoire
-  const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  rect1.style.backgroundColor = color;
-  rect2.style.backgroundColor = color;
+    const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    rect1.style.backgroundColor = color;
+    rect2.style.backgroundColor = color;
+});
+
+clearBtn.addEventListener("click", function() {
+  for (let i = 0; i < rectangles.length; i++) {
+      rectangles[i].remove();
+  }
+  rectangles.length = 0;
 });
